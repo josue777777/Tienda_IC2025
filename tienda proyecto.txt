@@ -1,0 +1,15 @@
+token : NetBeans acceso : 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
+
+
+
+url : https://github.com/josue777777/Tienda_IC2025.git
+
+
+http://localhost:8080/index.html   ---index es el nombre del doc , si no asignamos un puerto 
+
+
+http://localhost:81/nombrearchivo.html   en dado caso que le halla cambiado el puerto 
+
+
+http://localhost:81/       --> me lleva al index directamente 
+ssdds

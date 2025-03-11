@@ -5,14 +5,10 @@
         <title>Prueba</title>
     </head>
     <body>
-        <header th:replace="~{layout/plantilla :: header}">
-        </header>
-        
-        <h2>Listado de Categorías</h2>
+         <header th:replace="~{layout/plantilla :: header}"/>
+         
         <section th:replace="~{categoria/fragmentos :: editarCategoria}"/>
-
-        
-        <footer th:replace="~{layout/plantilla :: footer}">
-        </footer>
+         
+         <footer th:replace="~{layout/plantilla :: footer}"/>
     </body>
 </html>

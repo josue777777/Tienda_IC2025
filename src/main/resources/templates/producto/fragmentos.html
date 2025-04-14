@@ -233,3 +233,114 @@
         </section>
     </body>
 </html>
+
+<!-- 6 Fragmento formulario para el reporte 1 de la practica 5 -->
+
+<section th:fragment="formularioReportePrecios">
+    <div class="container mt-4">
+        <h2>Reporte de Productos por Rango de Precios</h2>
+        <form th:action="@{/producto/reportePrecios}" method="post" class="mt-3">
+            <div class="mb-3">
+                <label for="precioInf" class="form-label">Precio mínimo:</label>
+                <input type="number" step="0.01" min="0" class="form-control" id="precioInf" name="precioInf" required>
+            </div>
+            <div class="mb-3">
+                <label for="precioSup" class="form-label">Precio máximo:</label>
+                <input type="number" step="0.01" min="0" class="form-control" id="precioSup" name="precioSup" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generar Reporte</button>
+        </form>
+    </div>
+</section>
+
+<!-- 7 Fragmento formulario para el reporte 1 de la practica 5 -->
+<section th:fragment="tablaReportePrecios">
+    <div class="container mt-4">
+        <h3>Productos entre ₡[[${precioInf}]] y ₡[[${precioSup}]]</h3>
+
+        <div th:if="${productos != null and !productos.empty}">
+            <table class="table table-striped table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Existencias</th>
+                        <th>Estado</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="producto, contador : ${productos}">
+                        <td th:text="${contador.count}"></td>
+                        <td th:text="${producto.descripcion}"></td>
+                        <td th:text="${#numbers.formatDecimal(producto.precio, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                        <td th:text="${producto.existencias}"></td>
+                        <td th:text="${producto.activo ? 'Activo' : 'Inactivo'}"></td>
+                        <td th:text="${producto.categoria.descripcion}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${productos == null or productos.empty}">
+            <p class="alert alert-warning mt-3">No se encontraron productos en ese rango de precios.</p>
+        </div>
+
+        <a th:href="@{/producto/listado}" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+</section>
+
+<!-- 8 Fragmento fragmento botonesReportes - Reportes de la práctica 5 -->
+<section th:fragment="botonesReportes" class="py-2">
+    <div class="container">
+        <a th:href="@{/producto/reportePrecios}" class="btn btn-outline-info me-2">
+            <i class="fas fa-chart-bar"></i> Reporte por Precios
+        </a>
+        <a th:href="@{/producto/reporteActivos}" class="btn btn-outline-success">
+            <i class="fas fa-check-circle"></i> Reporte de Activos
+        </a>
+    </div>
+</section>
+
+
+
+<!-- 9 Fragmento tablaReporteActivos - Reporte 2 de la práctica 5 -->
+<section th:fragment="tablaReporteActivos">
+    <div class="container mt-4">
+        <h2>Productos Activos Ordenados por Categoría</h2>
+
+        <div th:if="${productos != null and !productos.empty}">
+            <table class="table table-striped table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Existencias</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="producto, contador : ${productos}">
+                        <td th:text="${contador.count}"></td>
+                        <td th:text="${producto.descripcion}"></td>
+                        <td th:text="${#numbers.formatDecimal(producto.precio, 1, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                        <td th:text="${producto.existencias}"></td>
+                        <td th:text="${producto.categoria.descripcion}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${productos == null or productos.empty}">
+            <p class="alert alert-warning mt-3">No hay productos activos registrados.</p>
+        </div>
+
+        <a th:href="@{/producto/listado}" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left"></i> Volver a productos
+        </a>
+    </div>
+</section>

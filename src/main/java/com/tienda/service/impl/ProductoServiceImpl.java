@@ -42,7 +42,8 @@ public class ProductoServiceImpl implements ProductoService {
         productoDao.delete(producto);
     }
 
-    // Lista de productos con precio entre ordendados por descripción ConsultaAmpliada
+    // Lista de productos con precio entre ordendados por descripción
+    // ConsultaAmpliada
     @Override
     @Transactional(readOnly = true)
     public List<Producto> findByPrecioBetweenOrderByDescripcion(double precioInf, double precioSup) {
@@ -55,10 +56,25 @@ public class ProductoServiceImpl implements ProductoService {
         return productoDao.metodoJPQL(precioInf, precioSup);
     }
 
-     @Override
-    @Transactional(readOnly=true)    
+    @Override
+    @Transactional(readOnly = true)
     public List<Producto> metodoNativo(double precioInf, double precioSup) {
         return productoDao.metodoNativo(precioInf, precioSup);
     }
-    
+
+    //practica 5 reporte 1
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> getProductosPorRango(double precioInf, double precioSup) {
+        return productoDao.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
+    }
+
+
+    // practica 5 reporte 2 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> getProductosActivos() {
+        return productoDao.findByActivoTrueOrderByCategoriaDescripcionAsc();
+    }
+
 }

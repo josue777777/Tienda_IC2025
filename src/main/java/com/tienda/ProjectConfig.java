@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,10 +23,12 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @Configuration
 public class ProjectConfig implements WebMvcConfigurer {
 
-    
-    /* Los siguientes métodos son para incorporar el tema de internacionalización en el proyecto */
+    /*
+     * Los siguientes métodos son para incorporar el tema de internacionalización en
+     * el proyecto
+     */
 
- /* localeResolver se utiliza para crear una sesión de cambio de idioma*/
+    /* localeResolver se utiliza para crear una sesión de cambio de idioma */
     @Bean
     public LocaleResolver localeResolver() {
         var slr = new SessionLocaleResolver();
@@ -35,7 +38,10 @@ public class ProjectConfig implements WebMvcConfigurer {
         return slr;
     }
 
-    /* localeChangeInterceptor se utiliza para crear un interceptor de cambio de idioma*/
+    /*
+     * localeChangeInterceptor se utiliza para crear un interceptor de cambio de
+     * idioma
+     */
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         var lci = new LocaleChangeInterceptor();
@@ -48,7 +54,7 @@ public class ProjectConfig implements WebMvcConfigurer {
         registro.addInterceptor(localeChangeInterceptor());
     }
 
-    //Bean para poder acceder a los Messages.properties en código...
+    // Bean para poder acceder a los Messages.properties en código...
     @Bean("messageSource")
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -57,7 +63,10 @@ public class ProjectConfig implements WebMvcConfigurer {
         return messageSource;
     }
 
-    /* Los siguiente métodos son para implementar el tema de seguridad dentro del proyecto */
+    /*
+     * Los siguiente métodos son para implementar el tema de seguridad dentro del
+     * proyecto
+     */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
@@ -70,33 +79,38 @@ public class ProjectConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((request) -> request
-                .requestMatchers("/", "/index", "/errores/**",
-                        "/carrito/**", "/pruebas/**", "/reportes/**",
-                        "/registro/**", "/js/**", "/webjars/**")
-                .permitAll()
-                .requestMatchers(
-                        "/producto/nuevo", "/producto/guardar",
-                        "/producto/modificar/**", "/producto/eliminar/**",
-                        "/categoria/nuevo", "/categoria/guardar",
-                        "/categoria/modificar/**", "/categoria/eliminar/**",
-                        "/usuario/nuevo", "/usuario/guardar",
-                        "/usuario/modificar/**", "/usuario/eliminar/**",
-                        "/reportes/**"
-                ).hasRole("ADMIN")
-                .requestMatchers(
-                        "/producto/listado",
-                        "/categoria/listado",
-                        "/usuario/listado"
-                ).hasAnyRole("ADMIN", "VENDEDOR")
-                .requestMatchers("/facturar/carrito")
-                .hasRole("USER")
-                )
+                        .requestMatchers(HttpMethod.GET,
+                                "/", "/index", "/errores/**",
+                                "/carrito/**", "/pruebas/**", "/reportes/**",
+                                "/producto/reportePrecios", // ← GET para la práctica 5 reporte 1
+                                "/registro/**", "/js/**", "/webjars/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/producto/reportePrecios" // ← POST para la práctica 5 reporte 1
+                        ).permitAll()
+                        .requestMatchers(
+                                "/producto/nuevo", "/producto/guardar",
+                                "/producto/modificar/**", "/producto/eliminar/**",
+                                "/categoria/nuevo", "/categoria/guardar",
+                                "/categoria/modificar/**", "/categoria/eliminar/**",
+                                "/usuario/nuevo", "/usuario/guardar",
+                                "/usuario/modificar/**", "/usuario/eliminar/**",
+                                "/reportes/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(
+                                "/producto/listado",
+                                "/categoria/listado",
+                                "/usuario/listado",
+                                "/producto/reporteActivos" //  añadido aquí para Reporte 2
+                        )
+                        .hasAnyRole("ADMIN", "VENDEDOR")
+                        .requestMatchers("/facturar/carrito")
+                        .hasRole("USER"))
                 .formLogin((form) -> form
-                .loginPage("/login").permitAll())
+                        .loginPage("/login").permitAll())
                 .logout((logout) -> logout.permitAll());
         return http.build();
     }
-
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -106,25 +120,29 @@ public class ProjectConfig implements WebMvcConfigurer {
         build.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
-    /* El siguiente método se utiliza para completar la clase no es 
-    realmente funcional, la próxima semana se reemplaza con usuarios de BD */
-    /*@Bean
-    public UserDetailsService users() {
-        UserDetails admin = User.builder()
-                .username("juan")
-                .password("{noop}123")
-                .roles("USER", "VENDEDOR", "ADMIN")
-                .build();
-        UserDetails sales = User.builder()
-                .username("rebeca")
-                .password("{noop}456")
-                .roles("USER", "VENDEDOR")
-                .build();
-        UserDetails user = User.builder()
-                .username("pedro")
-                .password("{noop}789")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user, sales, admin);
-    }*/
+    /*
+     * El siguiente método se utiliza para completar la clase no es
+     * realmente funcional, la próxima semana se reemplaza con usuarios de BD
+     */
+    /*
+     * @Bean
+     * public UserDetailsService users() {
+     * UserDetails admin = User.builder()
+     * .username("juan")
+     * .password("{noop}123")
+     * .roles("USER", "VENDEDOR", "ADMIN")
+     * .build();
+     * UserDetails sales = User.builder()
+     * .username("rebeca")
+     * .password("{noop}456")
+     * .roles("USER", "VENDEDOR")
+     * .build();
+     * UserDetails user = User.builder()
+     * .username("pedro")
+     * .password("{noop}789")
+     * .roles("USER")
+     * .build();
+     * return new InMemoryUserDetailsManager(user, sales, admin);
+     * }
+     */
 }

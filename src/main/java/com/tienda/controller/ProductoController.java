@@ -1,9 +1,5 @@
 package com.tienda.controller;
 
-import com.tienda.domain.Producto;
-import com.tienda.service.ProductoService;
-import com.tienda.service.CategoriaService;
-import com.tienda.service.impl.FirebaseStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.tienda.domain.Producto;
+import com.tienda.service.CategoriaService;
+import com.tienda.service.ProductoService;
+import com.tienda.service.impl.FirebaseStorageServiceImpl;
 
 @Controller
 @RequestMapping("/producto")
@@ -65,4 +66,32 @@ public class ProductoController {
         model.addAttribute("categorias", categorias);
         return "/producto/modifica";
     }
+
+    // practica 5 reporte 1
+    // carga la vista
+    @GetMapping("/reportePrecios")
+    public String mostrarFormularioReportePrecios() {
+        return "/producto/reporte1";
+    }
+
+    // los procesa
+    @PostMapping("/reportePrecios")
+    public String generarReportePrecios(@RequestParam double precioInf,
+            @RequestParam double precioSup,
+            Model model) {
+        var productos = productoService.getProductosPorRango(precioInf, precioSup);
+        model.addAttribute("productos", productos);
+        model.addAttribute("precioInf", precioInf);
+        model.addAttribute("precioSup", precioSup);
+        return "/producto/reporte1"; // 
+    }
+
+    //practica 5 reporte 2 
+    @GetMapping("/reporteActivos")
+    public String generarReporteActivos(Model model) {
+        var productos = productoService.getProductosActivos();
+        model.addAttribute("productos", productos);
+        return "/producto/reporte2"; // Vista que crearemos
+    }
+
 }
